@@ -258,6 +258,9 @@ Contributions welcome! Please feel free to submit a Pull Request.
 
 ## 👤 Author
 
+**Vinay Jain**
+- Email: vinex22@gmail.com, vinayjain@microsoft.com
+
 Created with ❤️ using Azure OpenAI GPT-4 and Python
 
 ## ⚠️ Disclaimer
