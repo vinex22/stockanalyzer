@@ -22,6 +22,33 @@ from io import BytesIO
 # Load environment variables
 load_dotenv()
 
+
+def validate_stock_symbol(stock_symbol):
+    """Validate if stock symbol exists by checking Google Finance."""
+    try:
+        # Try both NASDAQ and NYSE
+        for exchange in ['NASDAQ', 'NYSE']:
+            url = f"https://www.google.com/finance/quote/{stock_symbol}:{exchange}"
+            headers = {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+            }
+            
+            response = requests.get(url, headers=headers, timeout=5)
+            
+            # If we get a successful response and find price data, stock is valid
+            if response.status_code == 200:
+                soup = BeautifulSoup(response.content, 'html.parser')
+                price_div = soup.find('div', {'class': 'YMlKec fxKbKc'})
+                if price_div:
+                    return True, exchange
+        
+        # Stock not found on either exchange
+        return False, None
+    except Exception as e:
+        print(f"Error validating stock: {e}")
+        return False, None
+
+
 # Azure OpenAI Configuration
 client = AzureOpenAI(
     api_key=os.getenv("AZURE_OPENAI_API_KEY"),
@@ -1061,9 +1088,30 @@ def main():
     print("=" * 60)
     print()
     
-    # Use TSLA for testing
-    stock_symbol = "NVDA"
+    # Ask user for stock symbol
+    stock_symbol = input("Enter stock symbol (e.g., NVDA, AAPL, MSFT, TSLA): ").strip().upper()
     
+    if not stock_symbol:
+        print("❌ No stock symbol entered. Exiting.")
+        return
+    
+    print()
+    print(f"🔍 Validating stock symbol {stock_symbol}...")
+    
+    # Validate stock symbol first (before using LLM)
+    is_valid, exchange = validate_stock_symbol(stock_symbol)
+    
+    if not is_valid:
+        print()
+        print("=" * 60)
+        print(f"❌ ERROR: Invalid stock symbol '{stock_symbol.upper()}'")
+        print("=" * 60)
+        print("Please use a valid NASDAQ or NYSE stock symbol.")
+        print("Examples: NVDA, AAPL, MSFT, TSLA, GOOGL, META")
+        print("=" * 60)
+        return
+    
+    print(f"✅ Valid stock found on {exchange}")
     print()
     print(f"🔍 Fetching data for {stock_symbol.upper()}...")
     print()

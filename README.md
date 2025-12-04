@@ -92,17 +92,31 @@ reportlab>=4.0.0
 
 ### Basic Usage
 
-Run the analyzer (currently configured for NVDA):
+Run the analyzer:
 ```bash
 python stock_analyzer.py
 ```
 
-### Customize Stock Symbol
-
-Edit line 1284 in `stock_analyzer.py`:
-```python
-stock_symbol = "NVDA"  # Change to your desired stock symbol
+You'll be prompted to enter a stock symbol:
 ```
+📈 STOCK PRICE ANALYZER
+============================================================
+
+Enter stock symbol (e.g., NVDA, AAPL, MSFT, TSLA): NVDA
+```
+
+The analyzer will:
+1. ✅ Validate the stock symbol (checks NASDAQ/NYSE)
+2. 📊 Fetch real-time data from Google Finance
+3. 📅 Retrieve 30-day historical prices
+4. 📰 Scrape 15+ recent news articles
+5. 📈 Gather analyst forecasts
+6. 🤖 Generate 5 AI-powered analysis reports
+7. 📄 Create a professional PDF report
+
+### Interactive Input
+
+The tool now features interactive input - simply run the script and enter any valid stock symbol when prompted. No need to edit code!
 
 Supported stocks: Any NASDAQ-listed company (AAPL, MSFT, GOOGL, TSLA, META, AMZN, etc.)
 
@@ -219,6 +233,11 @@ Prioritizes reputable financial news sources:
 
 ### Common Issues
 
+**"Invalid stock symbol"**
+- Stock symbol is validated before analysis begins (no LLM usage for invalid symbols)
+- Only NASDAQ and NYSE symbols are supported
+- Use uppercase symbols (e.g., NVDA, not nvda)
+
 **"Could not fetch data for SYMBOL"**
 - Verify stock is listed on NASDAQ
 - Check internet connection
@@ -239,14 +258,30 @@ Prioritizes reputable financial news sources:
 
 ## 📈 Future Enhancements
 
-- [ ] Support for NYSE and other exchanges
-- [ ] Interactive CLI with argument parsing
+- [ ] Support for additional exchanges beyond NASDAQ
+- [x] Interactive CLI with stock symbol prompt
+- [x] Stock symbol validation before LLM usage
 - [ ] Multiple stock comparison reports
 - [ ] Technical indicators (RSI, MACD, Bollinger Bands)
 - [ ] Email delivery of reports
 - [ ] Scheduled analysis (daily/weekly)
 - [ ] Web dashboard interface
 - [ ] Export to Excel/CSV
+- [ ] REST API version (see `stock_analyzer_api.py`)
+
+## 🌐 API Version
+
+A Flask-based REST API version is also available! See:
+- **API Code**: `stock_analyzer_api.py`
+- **API Documentation**: `API_README.md`
+- **Insomnia Collection**: `Insomnia_Stock_Analyzer_API.json`
+- **Testing Guide**: `INSOMNIA_GUIDE.md`
+
+The API provides endpoints for:
+- Full stock analysis (POST `/api/analyze`)
+- PDF report download (GET `/api/analyze/<symbol>/pdf`)
+- Quick summary (GET `/api/quick-summary/<symbol>`)
+- Health check (GET `/api/health`)
 
 ## 📝 License
 
