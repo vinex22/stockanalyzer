@@ -1,0 +1,263 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2025-12-05T00:00:00.000Z",
+  "__export_source": "insomnia.desktop.app:v2023.5.8",
+  "resources": [
+    {
+      "_id": "wrk_stock_analyzer",
+      "parentId": null,
+      "_type": "workspace",
+      "name": "Stock Analyzer API",
+      "description": "AI-Powered Stock Analysis API",
+      "scope": "collection"
+    },
+    {
+      "_id": "env_stock_analyzer_base",
+      "parentId": "wrk_stock_analyzer",
+      "_type": "environment",
+      "name": "Base Environment",
+      "data": {
+        "base_url": "http://localhost:5000",
+        "stock_symbol": "NVDA"
+      },
+      "dataPropertyOrder": {
+        "&": ["base_url", "stock_symbol"]
+      },
+      "color": null,
+      "isPrivate": false
+    },
+    {
+      "_id": "req_health_check",
+      "parentId": "fld_basic",
+      "_type": "request",
+      "name": "Health Check",
+      "description": "Check if the API is running",
+      "url": "{{ _.base_url }}/api/health",
+      "method": "GET",
+      "headers": [],
+      "body": {},
+      "parameters": []
+    },
+    {
+      "_id": "req_quick_summary",
+      "parentId": "fld_basic",
+      "_type": "request",
+      "name": "Quick Summary",
+      "description": "Get basic stock information quickly",
+      "url": "{{ _.base_url }}/api/quick-summary/{{ _.stock_symbol }}",
+      "method": "GET",
+      "headers": [],
+      "body": {},
+      "parameters": []
+    },
+    {
+      "_id": "req_full_analysis",
+      "parentId": "fld_analysis",
+      "_type": "request",
+      "name": "Full Analysis (JSON)",
+      "description": "Get comprehensive AI-powered stock analysis",
+      "url": "{{ _.base_url }}/api/analyze",
+      "method": "POST",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"symbol\": \"{{ _.stock_symbol }}\",\n  \"include_pdf\": false\n}"
+      },
+      "parameters": []
+    },
+    {
+      "_id": "req_analysis_with_pdf",
+      "parentId": "fld_analysis",
+      "_type": "request",
+      "name": "Full Analysis (with PDF indicator)",
+      "description": "Get analysis with PDF availability flag",
+      "url": "{{ _.base_url }}/api/analyze",
+      "method": "POST",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"symbol\": \"{{ _.stock_symbol }}\",\n  \"include_pdf\": true\n}"
+      },
+      "parameters": []
+    },
+    {
+      "_id": "req_download_pdf",
+      "parentId": "fld_pdf",
+      "_type": "request",
+      "name": "Download PDF Report",
+      "description": "Generate and download PDF report",
+      "url": "{{ _.base_url }}/api/analyze/{{ _.stock_symbol }}/pdf",
+      "method": "GET",
+      "headers": [],
+      "body": {},
+      "parameters": []
+    },
+    {
+      "_id": "req_nvda",
+      "parentId": "fld_examples",
+      "_type": "request",
+      "name": "Analyze NVDA",
+      "url": "{{ _.base_url }}/api/analyze",
+      "method": "POST",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"symbol\": \"NVDA\",\n  \"include_pdf\": true\n}"
+      },
+      "parameters": []
+    },
+    {
+      "_id": "req_aapl",
+      "parentId": "fld_examples",
+      "_type": "request",
+      "name": "Analyze AAPL",
+      "url": "{{ _.base_url }}/api/analyze",
+      "method": "POST",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"symbol\": \"AAPL\",\n  \"include_pdf\": false\n}"
+      },
+      "parameters": []
+    },
+    {
+      "_id": "req_msft",
+      "parentId": "fld_examples",
+      "_type": "request",
+      "name": "Analyze MSFT",
+      "url": "{{ _.base_url }}/api/analyze",
+      "method": "POST",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"symbol\": \"MSFT\",\n  \"include_pdf\": true\n}"
+      },
+      "parameters": []
+    },
+    {
+      "_id": "req_tsla",
+      "parentId": "fld_examples",
+      "_type": "request",
+      "name": "Analyze TSLA",
+      "url": "{{ _.base_url }}/api/analyze",
+      "method": "POST",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"symbol\": \"TSLA\",\n  \"include_pdf\": false\n}"
+      },
+      "parameters": []
+    },
+    {
+      "_id": "req_error_missing_symbol",
+      "parentId": "fld_error_cases",
+      "_type": "request",
+      "name": "Error: Missing Symbol",
+      "description": "Test error handling - should return 400",
+      "url": "{{ _.base_url }}/api/analyze",
+      "method": "POST",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"include_pdf\": false\n}"
+      },
+      "parameters": []
+    },
+    {
+      "_id": "req_error_invalid_symbol",
+      "parentId": "fld_error_cases",
+      "_type": "request",
+      "name": "Error: Invalid Symbol",
+      "description": "Test with invalid stock symbol - should return 404",
+      "url": "{{ _.base_url }}/api/analyze",
+      "method": "POST",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"symbol\": \"INVALID123\",\n  \"include_pdf\": false\n}"
+      },
+      "parameters": []
+    },
+    {
+      "_id": "fld_basic",
+      "parentId": "wrk_stock_analyzer",
+      "_type": "request_group",
+      "name": "1. Basic Endpoints",
+      "description": "Health check and quick summary endpoints",
+      "environment": {}
+    },
+    {
+      "_id": "fld_analysis",
+      "parentId": "wrk_stock_analyzer",
+      "_type": "request_group",
+      "name": "2. Full Analysis",
+      "description": "Comprehensive AI-powered analysis endpoints",
+      "environment": {}
+    },
+    {
+      "_id": "fld_pdf",
+      "parentId": "wrk_stock_analyzer",
+      "_type": "request_group",
+      "name": "3. PDF Reports",
+      "description": "PDF generation and download endpoints",
+      "environment": {}
+    },
+    {
+      "_id": "fld_examples",
+      "parentId": "wrk_stock_analyzer",
+      "_type": "request_group",
+      "name": "4. Stock Examples",
+      "description": "Ready-to-use examples for popular stocks",
+      "environment": {}
+    },
+    {
+      "_id": "fld_error_cases",
+      "parentId": "wrk_stock_analyzer",
+      "_type": "request_group",
+      "name": "5. Error Cases",
+      "description": "Test error handling",
+      "environment": {}
+    }
+  ]
+}
