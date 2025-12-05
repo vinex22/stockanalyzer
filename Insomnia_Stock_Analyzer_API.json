@@ -1,20 +1,20 @@
 {
   "_type": "export",
   "__export_format": 4,
-  "__export_date": "2025-12-05T00:00:00.000Z",
+  "__export_date": "2025-12-06T00:00:00.000Z",
   "__export_source": "insomnia.desktop.app:v2023.5.8",
   "resources": [
     {
-      "_id": "wrk_stock_analyzer",
+      "_id": "wrk_stock_analyzer_agents",
       "parentId": null,
       "_type": "workspace",
-      "name": "Stock Analyzer API",
-      "description": "AI-Powered Stock Analysis API",
+      "name": "Stock Analyzer - Multi-Agent API",
+      "description": "AI-Powered Stock Analysis with 11 Specialized Agents",
       "scope": "collection"
     },
     {
       "_id": "env_stock_analyzer_base",
-      "parentId": "wrk_stock_analyzer",
+      "parentId": "wrk_stock_analyzer_agents",
       "_type": "environment",
       "name": "Base Environment",
       "data": {
@@ -29,7 +29,7 @@
     },
     {
       "_id": "req_health_check",
-      "parentId": "fld_basic",
+      "parentId": "fld_utility",
       "_type": "request",
       "name": "Health Check",
       "description": "Check if the API is running",
@@ -40,24 +40,24 @@
       "parameters": []
     },
     {
-      "_id": "req_quick_summary",
-      "parentId": "fld_basic",
+      "_id": "req_list_agents",
+      "parentId": "fld_utility",
       "_type": "request",
-      "name": "Quick Summary",
-      "description": "Get basic stock information quickly",
-      "url": "{{ _.base_url }}/api/quick-summary/{{ _.stock_symbol }}",
+      "name": "List All Agents",
+      "description": "Get list of all 11 AI agents and their endpoints",
+      "url": "{{ _.base_url }}/api/agents/list",
       "method": "GET",
       "headers": [],
       "body": {},
       "parameters": []
     },
     {
-      "_id": "req_full_analysis",
-      "parentId": "fld_analysis",
+      "_id": "req_technical_analysis",
+      "parentId": "fld_individual_agents",
       "_type": "request",
-      "name": "Full Analysis (JSON)",
-      "description": "Get comprehensive AI-powered stock analysis",
-      "url": "{{ _.base_url }}/api/analyze",
+      "name": "Agent 1: Technical Analysis",
+      "description": "Get technical indicators (SMA, EMA, RSI, MACD, Bollinger Bands)",
+      "url": "{{ _.base_url }}/api/agents/technical-analysis",
       "method": "POST",
       "headers": [
         {
@@ -67,17 +67,17 @@
       ],
       "body": {
         "mimeType": "application/json",
-        "text": "{\n  \"symbol\": \"{{ _.stock_symbol }}\",\n  \"include_pdf\": false\n}"
+        "text": "{\n  \"stock_symbol\": \"{{ _.stock_symbol }}\"\n}"
       },
       "parameters": []
     },
     {
-      "_id": "req_analysis_with_pdf",
-      "parentId": "fld_analysis",
+      "_id": "req_fundamental_analysis",
+      "parentId": "fld_individual_agents",
       "_type": "request",
-      "name": "Full Analysis (with PDF indicator)",
-      "description": "Get analysis with PDF availability flag",
-      "url": "{{ _.base_url }}/api/analyze",
+      "name": "Agent 2: Fundamental Analysis",
+      "description": "Get fundamental metrics (P/E, valuation, quality scores)",
+      "url": "{{ _.base_url }}/api/agents/fundamental-analysis",
       "method": "POST",
       "headers": [
         {
@@ -87,28 +87,236 @@
       ],
       "body": {
         "mimeType": "application/json",
-        "text": "{\n  \"symbol\": \"{{ _.stock_symbol }}\",\n  \"include_pdf\": true\n}"
+        "text": "{\n  \"stock_symbol\": \"{{ _.stock_symbol }}\"\n}"
       },
       "parameters": []
     },
     {
-      "_id": "req_download_pdf",
+      "_id": "req_company_name",
+      "parentId": "fld_individual_agents",
+      "_type": "request",
+      "name": "Agent 3: Company Name",
+      "description": "Get official company name and logo URL",
+      "url": "{{ _.base_url }}/api/agents/company-name",
+      "method": "POST",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"stock_symbol\": \"{{ _.stock_symbol }}\"\n}"
+      },
+      "parameters": []
+    },
+    {
+      "_id": "req_fraud_detection",
+      "parentId": "fld_individual_agents",
+      "_type": "request",
+      "name": "Agent 4: Fraud Detection",
+      "description": "Calculate mathematical fraud indicators",
+      "url": "{{ _.base_url }}/api/agents/fraud-detection",
+      "method": "POST",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"stock_symbol\": \"{{ _.stock_symbol }}\"\n}"
+      },
+      "parameters": []
+    },
+    {
+      "_id": "req_fraud_analysis",
+      "parentId": "fld_individual_agents",
+      "_type": "request",
+      "name": "Agent 5: Fraud Analysis",
+      "description": "LLM-powered fraud risk assessment",
+      "url": "{{ _.base_url }}/api/agents/fraud-analysis",
+      "method": "POST",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"stock_symbol\": \"{{ _.stock_symbol }}\"\n}"
+      },
+      "parameters": []
+    },
+    {
+      "_id": "req_summary",
+      "parentId": "fld_summary_agents",
+      "_type": "request",
+      "name": "Agent 6: Summary (200 tokens)",
+      "description": "Concise 4-5 sentence summary",
+      "url": "{{ _.base_url }}/api/agents/summary",
+      "method": "POST",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"stock_symbol\": \"{{ _.stock_symbol }}\",\n  \"context\": \"Stock analysis context here\"\n}"
+      },
+      "parameters": []
+    },
+    {
+      "_id": "req_executive_summary",
+      "parentId": "fld_summary_agents",
+      "_type": "request",
+      "name": "Agent 7: Executive Summary (800 tokens)",
+      "description": "8-12 sentence executive overview",
+      "url": "{{ _.base_url }}/api/agents/executive-summary",
+      "method": "POST",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"stock_symbol\": \"{{ _.stock_symbol }}\",\n  \"context\": \"Stock analysis context here\"\n}"
+      },
+      "parameters": []
+    },
+    {
+      "_id": "req_detailed_analysis",
+      "parentId": "fld_summary_agents",
+      "_type": "request",
+      "name": "Agent 8: Detailed Analysis (1500 tokens)",
+      "description": "Comprehensive analysis with news impact",
+      "url": "{{ _.base_url }}/api/agents/detailed-analysis",
+      "method": "POST",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"stock_symbol\": \"{{ _.stock_symbol }}\",\n  \"context\": \"Stock analysis context here\"\n}"
+      },
+      "parameters": []
+    },
+    {
+      "_id": "req_investment_recommendation",
+      "parentId": "fld_summary_agents",
+      "_type": "request",
+      "name": "Agent 9: Investment Recommendations (2000 tokens)",
+      "description": "Recommendations for 3 time horizons (1 week, 6 months, 2 years)",
+      "url": "{{ _.base_url }}/api/agents/investment-recommendation",
+      "method": "POST",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"stock_symbol\": \"{{ _.stock_symbol }}\",\n  \"context\": \"Stock analysis context here\"\n}"
+      },
+      "parameters": []
+    },
+    {
+      "_id": "req_analyst_synthesis",
+      "parentId": "fld_summary_agents",
+      "_type": "request",
+      "name": "Agent 10: Analyst Synthesis (1500 tokens)",
+      "description": "Synthesize analyst ratings and price targets",
+      "url": "{{ _.base_url }}/api/agents/analyst-synthesis",
+      "method": "POST",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"stock_symbol\": \"{{ _.stock_symbol }}\",\n  \"context\": \"Stock analysis context here\"\n}"
+      },
+      "parameters": []
+    },
+    {
+      "_id": "req_meta_analysis",
+      "parentId": "fld_summary_agents",
+      "_type": "request",
+      "name": "Agent 11: Meta-Analysis (2000 tokens)",
+      "description": "AI-powered meta-analysis and cross-validation",
+      "url": "{{ _.base_url }}/api/agents/meta-analysis",
+      "method": "POST",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"stock_symbol\": \"{{ _.stock_symbol }}\",\n  \"context\": \"Stock analysis context here\"\n}"
+      },
+      "parameters": []
+    },
+    {
+      "_id": "req_orchestrator",
+      "parentId": "fld_orchestrator",
+      "_type": "request",
+      "name": "Multi-Agent Orchestrator",
+      "description": "Coordinate all 11 agents for comprehensive analysis",
+      "url": "{{ _.base_url }}/api/orchestrator/full-analysis",
+      "method": "POST",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"stock_symbol\": \"{{ _.stock_symbol }}\"\n}"
+      },
+      "parameters": []
+    },
+    {
+      "_id": "req_generate_pdf",
       "parentId": "fld_pdf",
       "_type": "request",
-      "name": "Download PDF Report",
-      "description": "Generate and download PDF report",
-      "url": "{{ _.base_url }}/api/analyze/{{ _.stock_symbol }}/pdf",
-      "method": "GET",
-      "headers": [],
-      "body": {},
+      "name": "Generate PDF Report",
+      "description": "Generate professional PDF report with all agent outputs",
+      "url": "{{ _.base_url }}/api/pdf/generate",
+      "method": "POST",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"stock_symbol\": \"{{ _.stock_symbol }}\",\n  \"analysis_results\": {}\n}"
+      },
       "parameters": []
     },
     {
       "_id": "req_nvda",
       "parentId": "fld_examples",
       "_type": "request",
-      "name": "Analyze NVDA",
-      "url": "{{ _.base_url }}/api/analyze",
+      "name": "NVDA - Full Analysis",
+      "url": "{{ _.base_url }}/api/orchestrator/full-analysis",
       "method": "POST",
       "headers": [
         {
@@ -118,7 +326,7 @@
       ],
       "body": {
         "mimeType": "application/json",
-        "text": "{\n  \"symbol\": \"NVDA\",\n  \"include_pdf\": true\n}"
+        "text": "{\n  \"stock_symbol\": \"NVDA\"\n}"
       },
       "parameters": []
     },
@@ -126,8 +334,8 @@
       "_id": "req_aapl",
       "parentId": "fld_examples",
       "_type": "request",
-      "name": "Analyze AAPL",
-      "url": "{{ _.base_url }}/api/analyze",
+      "name": "AAPL - Technical Analysis Only",
+      "url": "{{ _.base_url }}/api/agents/technical-analysis",
       "method": "POST",
       "headers": [
         {
@@ -137,7 +345,7 @@
       ],
       "body": {
         "mimeType": "application/json",
-        "text": "{\n  \"symbol\": \"AAPL\",\n  \"include_pdf\": false\n}"
+        "text": "{\n  \"stock_symbol\": \"AAPL\"\n}"
       },
       "parameters": []
     },
@@ -145,8 +353,8 @@
       "_id": "req_msft",
       "parentId": "fld_examples",
       "_type": "request",
-      "name": "Analyze MSFT",
-      "url": "{{ _.base_url }}/api/analyze",
+      "name": "MSFT - Fraud Detection",
+      "url": "{{ _.base_url }}/api/agents/fraud-detection",
       "method": "POST",
       "headers": [
         {
@@ -156,7 +364,7 @@
       ],
       "body": {
         "mimeType": "application/json",
-        "text": "{\n  \"symbol\": \"MSFT\",\n  \"include_pdf\": true\n}"
+        "text": "{\n  \"stock_symbol\": \"MSFT\"\n}"
       },
       "parameters": []
     },
@@ -164,8 +372,8 @@
       "_id": "req_tsla",
       "parentId": "fld_examples",
       "_type": "request",
-      "name": "Analyze TSLA",
-      "url": "{{ _.base_url }}/api/analyze",
+      "name": "TSLA - PDF Report",
+      "url": "{{ _.base_url }}/api/pdf/generate",
       "method": "POST",
       "headers": [
         {
@@ -175,7 +383,7 @@
       ],
       "body": {
         "mimeType": "application/json",
-        "text": "{\n  \"symbol\": \"TSLA\",\n  \"include_pdf\": false\n}"
+        "text": "{\n  \"stock_symbol\": \"TSLA\",\n  \"analysis_results\": {}\n}"
       },
       "parameters": []
     },
@@ -185,7 +393,7 @@
       "_type": "request",
       "name": "Error: Missing Symbol",
       "description": "Test error handling - should return 400",
-      "url": "{{ _.base_url }}/api/analyze",
+      "url": "{{ _.base_url }}/api/orchestrator/full-analysis",
       "method": "POST",
       "headers": [
         {
@@ -195,7 +403,7 @@
       ],
       "body": {
         "mimeType": "application/json",
-        "text": "{\n  \"include_pdf\": false\n}"
+        "text": "{}"
       },
       "parameters": []
     },
@@ -204,8 +412,8 @@
       "parentId": "fld_error_cases",
       "_type": "request",
       "name": "Error: Invalid Symbol",
-      "description": "Test with invalid stock symbol - should return 404",
-      "url": "{{ _.base_url }}/api/analyze",
+      "description": "Test with invalid stock symbol - should return 400",
+      "url": "{{ _.base_url }}/api/agents/technical-analysis",
       "method": "POST",
       "headers": [
         {
@@ -215,47 +423,63 @@
       ],
       "body": {
         "mimeType": "application/json",
-        "text": "{\n  \"symbol\": \"INVALID123\",\n  \"include_pdf\": false\n}"
+        "text": "{\n  \"stock_symbol\": \"INVALID123\"\n}"
       },
       "parameters": []
     },
     {
-      "_id": "fld_basic",
-      "parentId": "wrk_stock_analyzer",
+      "_id": "fld_utility",
+      "parentId": "wrk_stock_analyzer_agents",
       "_type": "request_group",
-      "name": "1. Basic Endpoints",
-      "description": "Health check and quick summary endpoints",
+      "name": "1. Utility Endpoints",
+      "description": "Health check and agent discovery",
       "environment": {}
     },
     {
-      "_id": "fld_analysis",
-      "parentId": "wrk_stock_analyzer",
+      "_id": "fld_individual_agents",
+      "parentId": "wrk_stock_analyzer_agents",
       "_type": "request_group",
-      "name": "2. Full Analysis",
-      "description": "Comprehensive AI-powered analysis endpoints",
+      "name": "2. Individual Agents (1-5)",
+      "description": "Technical, Fundamental, Company Name, Fraud Detection & Analysis",
+      "environment": {}
+    },
+    {
+      "_id": "fld_summary_agents",
+      "parentId": "wrk_stock_analyzer_agents",
+      "_type": "request_group",
+      "name": "3. Summary Agents (6-11)",
+      "description": "Summary, Executive, Detailed, Investment, Analyst, Meta-Analysis",
+      "environment": {}
+    },
+    {
+      "_id": "fld_orchestrator",
+      "parentId": "wrk_stock_analyzer_agents",
+      "_type": "request_group",
+      "name": "4. Multi-Agent Orchestrator",
+      "description": "Coordinate all 11 agents for complete analysis",
       "environment": {}
     },
     {
       "_id": "fld_pdf",
-      "parentId": "wrk_stock_analyzer",
+      "parentId": "wrk_stock_analyzer_agents",
       "_type": "request_group",
-      "name": "3. PDF Reports",
-      "description": "PDF generation and download endpoints",
+      "name": "5. PDF Generation",
+      "description": "Generate professional PDF reports",
       "environment": {}
     },
     {
       "_id": "fld_examples",
-      "parentId": "wrk_stock_analyzer",
+      "parentId": "wrk_stock_analyzer_agents",
       "_type": "request_group",
-      "name": "4. Stock Examples",
+      "name": "6. Stock Examples",
       "description": "Ready-to-use examples for popular stocks",
       "environment": {}
     },
     {
       "_id": "fld_error_cases",
-      "parentId": "wrk_stock_analyzer",
+      "parentId": "wrk_stock_analyzer_agents",
       "_type": "request_group",
-      "name": "5. Error Cases",
+      "name": "7. Error Cases",
       "description": "Test error handling",
       "environment": {}
     }
