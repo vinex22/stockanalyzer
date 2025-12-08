@@ -824,12 +824,28 @@ Domain:"""
             }
             
             domain = domain_map.get(company_name_lower, f"{company_name_lower}.com")
-        logo_url = f"https://logo.clearbit.com/{domain}"
         
-        response = requests.get(logo_url, timeout=5)
-        if response.status_code == 200:
-            return BytesIO(response.content)
+        # Try multiple logo sources in order of preference
+        logo_sources = [
+            f"https://img.logo.dev/{domain}",  # Logo.dev (free, no token needed)
+            f"https://logo.clearbit.com/{domain}",  # Clearbit (legacy, may not work)
+            f"https://www.google.com/s2/favicons?domain={domain}&sz=128",  # Google favicon (reliable fallback)
+        ]
         
+        for logo_url in logo_sources:
+            try:
+                print(f"🔍 Fetching logo from: {logo_url}")
+                response = requests.get(logo_url, timeout=5)
+                if response.status_code == 200 and len(response.content) > 100:  # Ensure it's not just an error page
+                    print(f"✅ Logo fetched successfully")
+                    return BytesIO(response.content)
+                else:
+                    print(f"⚠️  Source returned status code: {response.status_code}")
+            except Exception as e:
+                print(f"⚠️  Failed to fetch from this source: {e}")
+                continue
+        
+        print(f"⚠️  All logo sources failed for {domain}")
         return None
         
     except Exception as e:
@@ -1091,8 +1107,8 @@ P/E Ratio: {stock_data.get('pe_ratio', 'N/A')}
 def summary_agent(summary_text):
     """Summary Agent: Generates 2-3 sentence short summary"""
     try:
-        short_prompt = """You are a financial analyst. Create a very brief summary (2-3 sentences) of the stock's current status.
-Focus only on: current price movement, market cap, and overall sentiment."""
+        short_prompt = """You are a financial analyst. Create a very brief summary (5-10 sentences) of the stock's current status.
+Focus only on: current price movement, market cap, and overall sentiment. ALso Include technical indicators and fundamental analysis."""
         
         short_user_message = f"Summarize this stock data briefly:\n\n{summary_text[:1000]}"
         
@@ -1102,7 +1118,7 @@ Focus only on: current price movement, market cap, and overall sentiment."""
                 {"role": "system", "content": short_prompt},
                 {"role": "user", "content": short_user_message}
             ],
-            max_completion_tokens=200
+            max_completion_tokens=400
         )
         return short_response.choices[0].message.content
     except Exception as e:
@@ -1141,7 +1157,7 @@ Format: Clear paragraphs, professional tone. 8-12 sentences total."""
                 {"role": "system", "content": exec_prompt},
                 {"role": "user", "content": exec_user_message}
             ],
-            max_completion_tokens=800
+            max_completion_tokens=1200
         )
         return exec_response.choices[0].message.content
     except Exception as e:
@@ -1198,7 +1214,7 @@ Be specific about technical signals, how news events correlate with stock price 
                 {"role": "system", "content": detailed_prompt},
                 {"role": "user", "content": detailed_user_message}
             ],
-            max_completion_tokens=1500
+            max_completion_tokens=3000
         )
         return detailed_response.choices[0].message.content
     except Exception as e:
@@ -1255,7 +1271,7 @@ Include what-if scenarios and contingency plans based on technical breakout/brea
                 {"role": "system", "content": recommendation_prompt},
                 {"role": "user", "content": recommendation_user_message}
             ],
-            max_completion_tokens=2000
+            max_completion_tokens=3000
         )
         return recommendation_response.choices[0].message.content
     except Exception as e:
@@ -1933,8 +1949,11 @@ def generate_pdf_report(stock_data, historical_data, forecast_data, summaries, s
                 logo.hAlign = 'CENTER'
                 story.append(logo)
                 story.append(Spacer(1, 0.2*inch))
+                print(f"✅ Company logo added to PDF")
             except Exception as e:
                 print(f"⚠️  Could not add logo to PDF: {e}")
+        else:
+            print(f"ℹ️  Logo not available for {stock_symbol} - continuing without logo")
         
         story.append(Paragraph(f"Stock Analysis Report: {stock_symbol}", title_style))
         story.append(Paragraph(f"Generated: {datetime.now().strftime('%B %d, %Y at %I:%M %p')}", styles['Normal']))
@@ -2632,7 +2651,7 @@ def main():
     print("🤖 MULTI-AGENT AI ANALYSIS SYSTEM (11 Specialized Agents)")
     print("=" * 60)
     print()
-    print("🔄 Deploying AI Agents:")
+    print("🔄 Invoking AI Agents:")
     print("  1️⃣  Technical Analysis Agent")
     print("  2️⃣  Fundamental Analysis Agent")
     print("  3️⃣  Summary Agent")
@@ -2643,7 +2662,7 @@ def main():
     print("  8️⃣  Meta-Analysis Agent")
     print("  9️⃣  Fraud Detection Agent")
     print("  🔟 Fraud Analysis Agent")
-    print("  1️⃣1️⃣ Company Name Agent")
+   
     print()
     
     # Use news_articles if available, otherwise pass empty list
